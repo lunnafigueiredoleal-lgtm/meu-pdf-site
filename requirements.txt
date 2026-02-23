@@ -4,3 +4,6 @@ pillow
 pdf2docx
 reportlab
 gunicorn
+docx
+pdf2image
+python-docx
