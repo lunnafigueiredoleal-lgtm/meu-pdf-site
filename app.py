@@ -17,45 +17,110 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route("/")
 def index():
     return '''
-    <h2>Meu PDF Tool</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Meu PDF Tool</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            font-family: Arial, sans-serif;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
 
+        h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background-color: #1e293b;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+
+        button {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #2563eb;
+        }
+
+        input[type="file"],
+        input[type="password"] {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>🌑 Meu PDF Tool</h2>
+
+<div class="card">
     <h3>Juntar PDFs</h3>
     <form method="POST" action="/merge" enctype="multipart/form-data">
-        <input type="file" name="pdfs" multiple required>
+        <input type="file" name="pdfs" multiple required><br>
         <button type="submit">Juntar</button>
     </form>
+</div>
 
+<div class="card">
     <h3>Proteger PDF</h3>
     <form method="POST" action="/protect" enctype="multipart/form-data">
-        <input type="file" name="file" required><br><br>
-        <input type="password" name="password" placeholder="Senha" required><br><br>
+        <input type="file" name="file" required><br>
+        <input type="password" name="password" placeholder="Senha" required><br>
         <button type="submit">Proteger</button>
     </form>
+</div>
 
+<div class="card">
     <h3>Word → PDF</h3>
     <form method="POST" action="/word_to_pdf" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <input type="file" name="file" required><br>
         <button type="submit">Converter</button>
     </form>
+</div>
 
+<div class="card">
     <h3>PDF → Word</h3>
     <form method="POST" action="/pdf_to_word" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <input type="file" name="file" required><br>
         <button type="submit">Converter</button>
     </form>
+</div>
 
+<div class="card">
     <h3>Imagem → PDF</h3>
     <form method="POST" action="/image_to_pdf" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <input type="file" name="file" required><br>
         <button type="submit">Converter</button>
     </form>
+</div>
 
+<div class="card">
     <h3>PDF → Imagem</h3>
     <form method="POST" action="/pdf_to_image" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <input type="file" name="file" required><br>
         <button type="submit">Converter</button>
     </form>
-    '''
+</div>
+
+</body>
+</html>
+'''
 
 # ---------------- MERGE ----------------
 @app.route("/merge", methods=["POST"])
