@@ -30,8 +30,8 @@ def index():
             padding: 40px;
         }
 
-        h2 {
-            font-size: 32px;
+        .logo img {
+            max-width: 400px;
             margin-bottom: 30px;
         }
 
@@ -67,7 +67,9 @@ def index():
 </head>
 <body>
 
-<h2>🌑 Meu PDF Tool</h2>
+<div class="logo">
+    <img src="/static/logo.png" alt="Logo">
+</div>
 
 <div class="card">
     <h3>Juntar PDFs</h3>
