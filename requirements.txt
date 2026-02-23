@@ -1,0 +1,6 @@
+flask
+PyPDF2
+pillow
+pdf2docx
+reportlab
+gunicorn
