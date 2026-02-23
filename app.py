@@ -65,7 +65,7 @@ def merge():
     output = "merged.pdf"
     merger.write(output)
     merger.close()
-    return send_file(output, as_attachment=True)
+    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
 @app.route("/protect", methods=["POST"])
 def protect():
@@ -79,7 +79,7 @@ def protect():
     output = "protected.pdf"
     with open(output, "wb") as f:
         writer.write(f)
-    return send_file(output, as_attachment=True)
+    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
 @app.route("/word_to_pdf", methods=["POST"])
 def word_to_pdf():
@@ -92,7 +92,7 @@ def word_to_pdf():
     for para in doc.paragraphs:
         elements.append(Paragraph(para.text, styles["Normal"]))
     pdf.build(elements)
-    return send_file(output, as_attachment=True)
+    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
 @app.route("/pdf_to_word", methods=["POST"])
 def pdf_to_word():
@@ -111,7 +111,7 @@ def image_to_pdf():
     image = Image.open(file).convert("RGB")
     output = "converted.pdf"
     image.save(output)
-    return send_file(output, as_attachment=True)
+    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
 @app.route("/pdf_to_image", methods=["POST"])
 def pdf_to_image():
@@ -121,7 +121,7 @@ def pdf_to_image():
     images = convert_from_path(input_path)
     output = "converted.jpg"
     images[0].save(output, "JPEG")
-    return send_file(output, as_attachment=True)
+    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
 if __name__ == "__main__":
     app.run()
