@@ -10,6 +10,7 @@ import os
 import uuid
 
 app = Flask(__name__)
+
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -56,72 +57,150 @@ def index():
     </form>
     '''
 
+# ---------------- MERGE ----------------
 @app.route("/merge", methods=["POST"])
 def merge():
     files = request.files.getlist("pdfs")
     merger = PdfMerger()
+
     for file in files:
         merger.append(file)
-    output = "merged.pdf"
+
+    output = f"{uuid.uuid4()}.pdf"
     merger.write(output)
     merger.close()
-    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(output)
+        except:
+            pass
+        return response
+
+    return send_file(output, as_attachment=True)
+
+# ---------------- PROTECT ----------------
 @app.route("/protect", methods=["POST"])
 def protect():
     file = request.files["file"]
     password = request.form["password"]
+
     reader = PdfReader(file)
     writer = PdfWriter()
+
     for page in reader.pages:
         writer.add_page(page)
+
     writer.encrypt(password)
-    output = "protected.pdf"
+
+    output = f"{uuid.uuid4()}.pdf"
     with open(output, "wb") as f:
         writer.write(f)
-    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(output)
+        except:
+            pass
+        return response
+
+    return send_file(output, as_attachment=True)
+
+# ---------------- WORD → PDF ----------------
 @app.route("/word_to_pdf", methods=["POST"])
 def word_to_pdf():
     file = request.files["file"]
     doc = Document(file)
-    output = "converted.pdf"
+
+    output = f"{uuid.uuid4()}.pdf"
     pdf = SimpleDocTemplate(output)
     styles = getSampleStyleSheet()
     elements = []
+
     for para in doc.paragraphs:
         elements.append(Paragraph(para.text, styles["Normal"]))
-    pdf.build(elements)
-    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
+    pdf.build(elements)
+
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(output)
+        except:
+            pass
+        return response
+
+    return send_file(output, as_attachment=True)
+
+# ---------------- PDF → WORD ----------------
 @app.route("/pdf_to_word", methods=["POST"])
 def pdf_to_word():
     file = request.files["file"]
-    input_path = "temp.pdf"
-    output_path = "converted.docx"
+
+    input_path = f"{uuid.uuid4()}.pdf"
+    output_path = f"{uuid.uuid4()}.docx"
+
     file.save(input_path)
+
     cv = Converter(input_path)
     cv.convert(output_path)
     cv.close()
+
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(input_path)
+            os.remove(output_path)
+        except:
+            pass
+        return response
+
     return send_file(output_path, as_attachment=True)
 
+# ---------------- IMAGE → PDF ----------------
 @app.route("/image_to_pdf", methods=["POST"])
 def image_to_pdf():
     file = request.files["file"]
-    image = Image.open(file).convert("RGB")
-    output = "converted.pdf"
-    image.save(output)
-    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
 
+    image = Image.open(file).convert("RGB")
+    output = f"{uuid.uuid4()}.pdf"
+    image.save(output)
+
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(output)
+        except:
+            pass
+        return response
+
+    return send_file(output, as_attachment=True)
+
+# ---------------- PDF → IMAGE ----------------
 @app.route("/pdf_to_image", methods=["POST"])
 def pdf_to_image():
     file = request.files["file"]
-    input_path = "temp.pdf"
+
+    input_path = f"{uuid.uuid4()}.pdf"
+    output = f"{uuid.uuid4()}.jpg"
+
     file.save(input_path)
+
     images = convert_from_path(input_path)
-    output = "converted.jpg"
     images[0].save(output, "JPEG")
-    @after_this_request def remove_file(response):     try:         os.remove(output)     except:         pass     return response  return send_file(output, as_attachment=True)
+
+    @after_this_request
+    def remove_file(response):
+        try:
+            os.remove(input_path)
+            os.remove(output)
+        except:
+            pass
+        return response
+
+    return send_file(output, as_attachment=True)
 
 if __name__ == "__main__":
     app.run()
