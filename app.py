@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, after_this_request
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 from PIL import Image
 from pdf2docx import Converter
