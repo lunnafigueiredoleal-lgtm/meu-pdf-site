@@ -5,6 +5,11 @@ from PyPDF2 import PdfMerger
 
 app = Flask(__name__)
 
+# 🔥 Força o navegador a usar o favicon correto
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('static/favicon.ico')
+
 # Criar pasta uploads se não existir
 UPLOAD_FOLDER = "uploads"
 if not os.path.exists(UPLOAD_FOLDER):
@@ -15,7 +20,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <title>Meu PDF Tool</title>
-    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <link rel="icon" href="/static/favicon.ico">
 
     <style>
         body {
